@@ -10,9 +10,9 @@ pushd ${PROJ_ROOT}>>/dev/null
 
 export VENV_PATH="${PROJ_ROOT}/venv-faasmctl"
 
-if [ ! -d ${VENV_PATH} ]; then
+#if [ ! -d ${VENV_PATH} ]; then
     ${PROJ_ROOT}/bin/create_venv.sh
-fi
+#fi
 
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 source ${VENV_PATH}/bin/activate
