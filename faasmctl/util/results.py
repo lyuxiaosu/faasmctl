@@ -8,6 +8,8 @@ def get_execution_time_from_message_results(result, unit="s"):
 
     # Faasm gives us the timestamps in ms
     try:
+        # Get arrival timestamp 
+        arrival_ts = min([msg.arrivalTs for msg in result.messageResults])
         # We have recently changed the name of the protobuf field, so support
         # both names for backwards compatibility
         start_ts = min([msg.startTimestamp for msg in result.messageResults])
@@ -16,12 +18,12 @@ def get_execution_time_from_message_results(result, unit="s"):
     end_ts = max([msg.finishTimestamp for msg in result.messageResults])
 
     if unit == "s":
-        return float((end_ts - start_ts) / 1e3)
+        return float((end_ts - start_ts) / 1e6), float((end_ts - arrival_ts) / 1e6)
 
     if unit == "ms":
-        return float((end_ts - start_ts))
+        return float((end_ts - start_ts) / 1e3), float((end_ts - arrival_ts) / 1e3)
 
-    return float((end_ts - start_ts) * 1e3)
+    return float((end_ts - start_ts)), float((end_ts - arrival_ts))
 
 
 def get_return_code_from_message_results(result):

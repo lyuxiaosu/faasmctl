@@ -28,6 +28,7 @@ def invoke(
     TODO: think how to enable all the possible command line values in a
     scalable way.
     """
+    print("Modified by xiaosu")
     num_messages = 1
     req_dict = {"user": user, "function": func}
     msg_dict = {"user": user, "function": func}
@@ -83,15 +84,20 @@ def invoke(
     # Wall time is the time elapsed as measured from the calling python script
     wall_time = "{:.2f} s".format(end_ts - start_ts)
     # Exec time is the time the function actually executed inside Faasm
-    exec_time = "{:.2f} s".format(
-        get_execution_time_from_message_results(result, unit="s")
-    )
+    #exec_time, turnover_time = "{:.2f} us".format(
+    #    get_execution_time_from_message_results(result, unit="us")
+    #)
+    exec_time, turnover_time = get_execution_time_from_message_results(result, unit="us")
+    exec_time = "{:.2f} us".format(exec_time)
+    turnover_time = "{:.2f} us".format(turnover_time)
+    print(exec_time, turnover_time)
 
     print("======================= Faasm Execution =========================")
     print("Function: \t\t\t{}/{}".format(user, function))
     print("Return value: \t\t\t{}".format(ret_val))
     print("Wall time: \t\t\t{}".format(wall_time))
     print("Execution time: \t\t{}".format(exec_time))
+    print("Turnover time: \t\t\t{}".format(turnover_time))
     print("-----------------------------------------------------------------")
     print("Output:\n{}".format(output))
     print("=================================================================")
