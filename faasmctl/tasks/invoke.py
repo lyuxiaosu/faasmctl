@@ -82,7 +82,7 @@ def invoke(
     output = result.messageResults[0].outputData
     ret_val = get_return_code_from_message_results(result)
     # Wall time is the time elapsed as measured from the calling python script
-    wall_time = "{:.2f} s".format(end_ts - start_ts)
+    wall_time = "{:.2f} us".format((end_ts - start_ts) * 1000000)
     # Exec time is the time the function actually executed inside Faasm
     #exec_time, turnover_time = "{:.2f} us".format(
     #    get_execution_time_from_message_results(result, unit="us")

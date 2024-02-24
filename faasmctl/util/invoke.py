@@ -118,7 +118,7 @@ def invoke_and_await(url, json_msg, expected_num_messages):
     )
     while True:
         # Sleep at the begining, so that the app is registered as in-flight
-        sleep(poll_period)
+        # sleep(poll_period)
 
         response = post(url, data=json_msg, timeout=None)
         if response.status_code != 200:
