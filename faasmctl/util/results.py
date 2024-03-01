@@ -6,24 +6,47 @@ def get_execution_time_from_message_results(result, unit="s"):
         )
         raise RuntimeError("Unrecognised time unit!")
 
-    # Faasm gives us the timestamps in ms
+    # Faasm gives us the timestamps in us
+    planner_decision_cost = 0
+    planner_nng_req_cost = 0
+    planner_before_schedule_cost = 0
+    planner_send_mapping_cost = 0
+    total_turnover_cost = 0
+    worker_enqueue_cost = 0
+    worker_before_exe_cost = 0
+    worker_exe_cost = 0
+    worker_snapshot_related_cost = 0
+    worker_release_cost = 0
+    worker_turnover_no_send_cost = 0
     try:
         # Get arrival timestamp 
-        arrival_ts = min([msg.arrivalTs for msg in result.messageResults])
+        planner_decision_cost = min([msg.plannerScheduleDecision for msg in result.messageResults])
+        planner_nng_req_cost = min([msg.plannerNngReq for msg in result.messageResults])
+        planner_before_schedule_cost = min([msg.plannerBeforeSchedule for msg in result.messageResults])
+        planner_send_mapping_cost = min([msg.plannerSendMapping for msg in result.messageResults])
+        total_turnover_cost = min([msg.totalTurnover for msg in result.messageResults])
+        worker_enqueue_cost = min([msg.workerEnqueueReq for msg in result.messageResults])
+        worker_before_exe_cost = min([msg.workerBeforeExe for msg in result.messageResults])
+        worker_exe_cost = min([msg.workerExe for msg in result.messageResults])
+        worker_snapshot_related_cost = min([msg.workerSnapShortRelated for msg in result.messageResults])
+        worker_release_cost = min([msg.workerRelease for msg in result.messageResults])
+        worker_turnover_no_send_cost = min([msg.workerTurnoverNoSend for msg in result.messageResults])
         # We have recently changed the name of the protobuf field, so support
         # both names for backwards compatibility
         start_ts = min([msg.startTimestamp for msg in result.messageResults])
     except AttributeError:
-        start_ts = min([msg.timestamp for msg in result.messageResults])
+        print(f"AttributeError: {e}")
+        raise
+        #start_ts = min([msg.timestamp for msg in result.messageResults])
     end_ts = max([msg.finishTimestamp for msg in result.messageResults])
 
-    if unit == "s":
-        return float((end_ts - start_ts) / 1e6), float((end_ts - arrival_ts) / 1e6)
+    #if unit == "s":
+    #    return float(total_turnover_us/ 1e6), float(half_nng_rtt_us/ 1e6), float(worker_turnover_us / 1e6), float(planner_turnover_us / 1e6), float(execution_us / 1e6)
 
-    if unit == "ms":
-        return float((end_ts - start_ts) / 1e3), float((end_ts - arrival_ts) / 1e3)
+    #if unit == "ms":
+    #    return float(total_turnover_us/ 1e3), float(half_nng_rtt_us/ 1e3), float(worker_turnover_us / 1e3), float(planner_turnover_us / 1e3), float(execution_us / 1e3)
 
-    return float((end_ts - start_ts)), float((end_ts - arrival_ts))
+    return planner_decision_cost, planner_nng_req_cost, planner_before_schedule_cost, planner_send_mapping_cost, total_turnover_cost, worker_enqueue_cost, worker_before_exe_cost, worker_exe_cost, worker_snapshot_related_cost, worker_release_cost, worker_turnover_no_send_cost 
 
 
 def get_return_code_from_message_results(result):

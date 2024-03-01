@@ -87,17 +87,46 @@ def invoke(
     #exec_time, turnover_time = "{:.2f} us".format(
     #    get_execution_time_from_message_results(result, unit="us")
     #)
-    exec_time, turnover_time = get_execution_time_from_message_results(result, unit="us")
-    exec_time = "{:.2f} us".format(exec_time)
-    turnover_time = "{:.2f} us".format(turnover_time)
-    print(exec_time, turnover_time)
+    planner_decision, planner_nng_req, planner_before_schedule, planner_send_mapping, total_turnover, worker_enqueue, worker_before_exe, worker_exe, worker_snapshot_related, worker_release, worker_turnover_no_send = get_execution_time_from_message_results(result, unit="us")
+    planner_cost = planner_decision + planner_nng_req + planner_before_schedule + planner_send_mapping
+    total_turnover = "{:.2f} us".format(total_turnover)
+    planner_decision = "{:.2f} us".format(planner_decision)
+    planner_nng_req = "{:.2f} us".format(planner_nng_req)
+    planner_before_schedule = "{:.2f} us".format(planner_before_schedule)
+    planner_send_mapping = "{:.2f} us".format(planner_send_mapping)
+    worker_enqueue = "{:.2f} us".format(worker_enqueue)
+    worker_before_exe = "{:.2f} us".format(worker_before_exe)
+    worker_exe = "{:.2f} us".format(worker_exe)
+    worker_snapshot_related = "{:.2f} us".format(worker_snapshot_related)
+    worker_release = "{:.2f} us".format(worker_release)
+    worker_turnover_no_send = "{:.2f} us".format(worker_turnover_no_send)
+
 
     print("======================= Faasm Execution =========================")
     print("Function: \t\t\t{}/{}".format(user, function))
     print("Return value: \t\t\t{}".format(ret_val))
     print("Wall time: \t\t\t{}".format(wall_time))
-    print("Execution time: \t\t{}".format(exec_time))
-    print("Turnover time: \t\t\t{}".format(turnover_time))
+    print("Total Turnover time: \t\t{}".format(total_turnover))
+    
+    print("                                                                 ")
+
+    print("===================== Planner Cost > {} ==========================".format(planner_cost))
+    print("Before Schedule Cost: \t\t{}".format(planner_before_schedule))
+    print("Make Schedule Decision cost: \t{}".format(planner_decision))
+    print("Send Mapping cost: \t\t{}".format(planner_send_mapping))
+    print("NNG Send Req To Worker cost: \t{}".format(planner_nng_req))
+   
+    print("                                                                 ") 
+    print("===================== Worker Cost > {} ==========================".format(worker_turnover_no_send))
+    print("Enqueue Request cost:\t\t{}".format(worker_enqueue))
+    print("Before Exe cost: \t\t{}".format(worker_before_exe))
+    print("Exe cost: \t\t\t{}".format(worker_exe))
+    print("Snapshot Related cost: \t\t{}".format(worker_snapshot_related))
+    print("Release Fasslet cost(buggy): \t{}".format(worker_release))
+
+    
+    print("                                                                 ")
+
     print("-----------------------------------------------------------------")
     print("Output:\n{}".format(output))
     print("=================================================================")
